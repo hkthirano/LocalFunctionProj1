@@ -10,7 +10,7 @@ trigger:
     - '*.yml'
 
 pool:
-      vmImage: 'windows-2022'
+      vmImage: 'windows-latest'
 steps:
 - task: UseDotNet@2
   inputs:
