@@ -1,0 +1,39 @@
+trigger: 
+  branches:
+    include:
+      - master
+  paths:
+    include:
+    - 'LocalFunctionProj1/*'
+    exclude:
+    - '*'
+    - '*.yml'
+
+pool:
+      vmImage: 'windows-latest'
+steps:
+- task: UseDotNet@2
+  inputs:
+    packageType: 'sdk'
+    version: '6.0.x'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: publish
+    arguments: '--configuration Release --output publish_output'
+    projects: 'LocalFunctionProj1/LocalFunctionProj1.csproj'
+    publishWebProjects: false
+    modifyOutputPath: false
+    zipAfterPublish: false
+
+- task: ArchiveFiles@2
+  displayName: "Archive files"
+  inputs:
+    rootFolderOrFile: "$(System.DefaultWorkingDirectory)/publish_output"
+    includeRootFolder: false
+    archiveFile: "$(System.DefaultWorkingDirectory)/LocalFunctionProj1.zip"
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(System.DefaultWorkingDirectory)/LocalFunctionProj1.zip'
+    artifactName: 'LocalFunctionProj1'
